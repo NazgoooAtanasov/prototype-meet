@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { putUser, fetchUser } from '../prisma/user';
+import { putUser, fetchUser, putLocation } from '../prisma/user';
 
 export async function createUser(req: Request, res: Response) {
     const response: { success: boolean, error: null | any } = { success: true, error: null };
@@ -15,11 +15,11 @@ export async function createUser(req: Request, res: Response) {
 }
 
 export async function getUser(req: Request, res: Response) {
-    const id: string = (req.query.id) as string;
+    const id: number = parseInt(req.params.id);
     const response: { success: boolean, data?: any, error: null | any } = { success: true, error: null };
 
     try {
-        const user = await fetchUser(parseInt(id));
+        const user = await fetchUser(id);
         response.data = user;
     } catch (err) { 
         response.success = false;
@@ -27,4 +27,13 @@ export async function getUser(req: Request, res: Response) {
     }
 
     res.json(response);
+}
+
+export async function linkLocation(req: Request, res: Response) {
+    const userId: number = parseInt(req.params.id);
+    const location: any = req.body;
+    
+    const putLocationResult = await putLocation(userId, location);
+
+    res.json(putLocationResult);
 }
