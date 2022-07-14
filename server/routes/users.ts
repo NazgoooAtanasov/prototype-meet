@@ -1,11 +1,15 @@
+import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { putUser, fetchUser, putLocation } from '../prisma/user';
 
 export async function createUser(req: Request, res: Response) {
-    const response: { success: boolean, error: null | any } = { success: true, error: null };
+    const response: { success: boolean, error: null | any, data?: any } = { success: true, error: null };
 
     try {
-        await putUser(req.body);
+        const user: User = await putUser(req.body);
+        response.data = {
+            user: { id: user.id }
+        };
     } catch (err) {
         response.success = false;
         response.error = err;

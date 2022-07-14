@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 const prisma = new PrismaClient();
 
-export async function putUser(user: any) {
-    await prisma.user.create({
+export async function putUser(user: any): Promise<User> {
+    return await prisma.user.create({
         data: {
             firstname: user.firstname,
             lastname: user.lastname,
