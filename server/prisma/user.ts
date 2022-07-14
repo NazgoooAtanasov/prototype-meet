@@ -15,9 +15,16 @@ export async function putUser(user: User): Promise<User> {
 
 export async function fetchUser(id: number): Promise<UserAndLocations> {
     return await prisma.user.findFirst({
-        where: {
-            id: id
-        },
+        where: { id },
+        include: {
+            locations: true
+        }
+    });
+}
+
+export async function fetchUserByEmail(email: string): Promise<UserAndLocations> {
+    return await prisma.user.findFirst({
+        where: { email },
         include: {
             locations: true
         }

@@ -1,21 +1,7 @@
 import { Location, User } from '@prisma/client';
 import { Request, Response } from 'express';
-import { putUser, fetchUser, putLocation } from '../prisma/user';
+import { fetchUser, putLocation } from '../prisma/user';
 import { ServerResponse, UserAndLocations } from '../types/types';
-
-export async function createUser(req: Request, res: Response) {
-    const response: ServerResponse<User> = { success: true, error: null };
-
-    try {
-        const user: User = await putUser(req.body);
-        response.data = user;
-    } catch (err) {
-        response.success = false;
-        response.error = err;
-    }
-
-    res.json(response);
-}
 
 export async function getUser(req: Request, res: Response) {
     const id: number = parseInt(req.params.id);
