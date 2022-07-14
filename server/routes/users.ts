@@ -1,15 +1,14 @@
-import { User } from '@prisma/client';
+import { Location, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { putUser, fetchUser, putLocation } from '../prisma/user';
+import { ServerResponse, UserAndLocations } from '../types/types';
 
 export async function createUser(req: Request, res: Response) {
-    const response: { success: boolean, error: null | any, data?: any } = { success: true, error: null };
+    const response: ServerResponse<User> = { success: true, error: null };
 
     try {
         const user: User = await putUser(req.body);
-        response.data = {
-            user: { id: user.id }
-        };
+        response.data = user;
     } catch (err) {
         response.success = false;
         response.error = err;
@@ -20,10 +19,10 @@ export async function createUser(req: Request, res: Response) {
 
 export async function getUser(req: Request, res: Response) {
     const id: number = parseInt(req.params.id);
-    const response: { success: boolean, data?: any, error: null | any } = { success: true, error: null };
+    const response: ServerResponse<UserAndLocations> = { success: true, error: null };
 
     try {
-        const user = await fetchUser(id);
+        const user: UserAndLocations = await fetchUser(id);
         response.data = user;
     } catch (err) { 
         response.success = false;
@@ -34,10 +33,18 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function linkLocation(req: Request, res: Response) {
-    const userId: number = parseInt(req.params.id);
-    const location: any = req.body;
-    
-    const putLocationResult = await putLocation(userId, location);
+    const response: ServerResponse<UserAndLocations> = { success: true, error: null };
 
-    res.json(putLocationResult);
+    const userId: number = parseInt(req.params.id);
+    const location: Location = req.body;
+    
+    try {
+        const putLocationResult: UserAndLocations = await putLocation(userId, location);
+        response.data = putLocationResult;
+    } catch (error) {
+        response.error = error;
+        response.success = false;
+    }
+
+    res.json(response);
 }

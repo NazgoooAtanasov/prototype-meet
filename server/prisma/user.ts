@@ -1,7 +1,9 @@
 import { PrismaClient, User } from '@prisma/client';
+import { UserAndLocations } from '../types/types';
+
 const prisma = new PrismaClient();
 
-export async function putUser(user: any): Promise<User> {
+export async function putUser(user: User): Promise<User> {
     return await prisma.user.create({
         data: {
             firstname: user.firstname,
@@ -11,7 +13,7 @@ export async function putUser(user: any): Promise<User> {
     });
 }
 
-export async function fetchUser(id: number) {
+export async function fetchUser(id: number): Promise<UserAndLocations> {
     return await prisma.user.findFirst({
         where: {
             id: id
@@ -22,7 +24,7 @@ export async function fetchUser(id: number) {
     });
 }
 
-export async function putLocation(id: number, location: any) {
+export async function putLocation(id: number, location: any): Promise<UserAndLocations> {
     return await prisma.user.update({
         where: { id },
         data: {
