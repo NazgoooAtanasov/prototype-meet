@@ -1,6 +1,6 @@
-import { User } from './types';
+import { ServerResponse, User } from './types';
 
-export async function putUser(user: User): Promise<number | any> {
+export async function putUser(user: User): Promise<User | any> {
     try {
         const putRequest = await fetch('http://192.168.1.10:8000/users/create', { 
             method: 'post',
@@ -9,14 +9,15 @@ export async function putUser(user: User): Promise<number | any> {
                 'Content-Type': 'application/json'
             }
         });
-        const putRequestResponse: { success: boolean, error: null | any, data?: { user: { id: number } } } = await putRequest.json();
+
+        const putRequestResponse: ServerResponse<User> = await putRequest.json();
 
         if (putRequestResponse.success) {
-            return putRequestResponse.data!.user.id;
+            return putRequestResponse.data!;
         }
 
         return putRequestResponse.error;
     } catch (error) {
-        console.log(error);
+        return error;
     }
 }

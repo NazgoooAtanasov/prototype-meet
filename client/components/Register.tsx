@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { User } from '../api/types';
 import { putUser } from '../api/users';
 
 import InputField from './form/InputField';
@@ -12,15 +13,13 @@ export default function Register() {
 
     const submit = async (): Promise<void> => {
         if (firstname.length > 0 && lastname.length > 0 && email.length > 0) {
-            const userId: number | any = await putUser({
+            const user: User = await putUser({
                 firstname,
                 lastname,
                 email
             });
 
-            if (!isNaN(userId)) {
-                console.log(userId);
-            }
+            console.log(user);
         }
     }
 
