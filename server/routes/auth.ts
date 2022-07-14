@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import { fetchUserByEmail, putUser } from '../prisma/user';
 import { Request, Response } from 'express';
@@ -35,6 +36,13 @@ export async function signin(req: Request, res: Response) {
     }
 
     // check password hash
+    const arePasswordsMatching = await bcrypt.compare(signinCredentials.password, user.password);
+
+    if (!arePasswordsMatching) {
+        response.success = false;
+        response.error = 'Wrong password';
+        return res.json(response);
+    }
 
     response.data = {
         jwt: generateJWT({ email: user.email, id: user.id })
@@ -45,9 +53,12 @@ export async function signin(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
     const response: ServerResponse<User> = { success: true, error: null };
+    const signupCredentials: User = req.body;
 
     try {
-        const user: User = await putUser(req.body);
+        const user: User = await putUser(signupCredentials);
+        // just removing the password before sending the user to the client
+        user.password = '*************';
         response.data = user;
     } catch (err) {
         response.success = false;

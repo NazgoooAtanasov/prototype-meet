@@ -1,14 +1,20 @@
+import bcrypt from 'bcrypt';
 import { PrismaClient, User } from '@prisma/client';
 import { UserAndLocations } from '../types/types';
 
 const prisma = new PrismaClient();
 
 export async function putUser(user: User): Promise<User> {
+    // what are rounds??? 
+    const rounds = 10;
+    const hashedpassword = await bcrypt.hash(user.password, rounds);
+
     return await prisma.user.create({
         data: {
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            password: hashedpassword
         },
     });
 }
