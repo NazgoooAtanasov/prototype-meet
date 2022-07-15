@@ -1,6 +1,6 @@
 import { ServerResponse, Token, User } from './types';
 
-export async function putUser(user: User): Promise<(User & Token) | any> {
+export async function signup(user: User): Promise<(User & Token) | any> {
     try {
         const putRequest = await fetch('http://192.168.1.10:8000/auth/signup', { 
             method: 'post',
@@ -17,6 +17,27 @@ export async function putUser(user: User): Promise<(User & Token) | any> {
         }
 
         return putRequestResponse.error;
+    } catch (error) {
+        return error;
+    }
+}
+
+export async function signin(credentials: { email: string, password: string }): Promise<Token> {
+    try {
+        const signinRequest = await fetch('http://192.168.1.10:8000/auth/signin', {
+            method: 'post',
+            body: JSON.stringify(credentials),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const signinRequestResponse: ServerResponse<Token> = await signinRequest.json();
+        if (signinRequestResponse.success) {
+            return signinRequestResponse.data!;
+        }
+
+        return signinRequestResponse.error;
     } catch (error) {
         return error;
     }

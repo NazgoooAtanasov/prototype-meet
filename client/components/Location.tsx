@@ -1,7 +1,8 @@
 import { fetchLocation } from '../api/location';
 import { useState } from 'react';
-import { Button, Text } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import { LocationObject } from 'expo-location';
+import { style } from '../styles/styles';
 
 function LocationDetails(props: { location: LocationObject | null }) {
     if (props.location) {
@@ -19,9 +20,9 @@ export default function Location() {
     }
 
     return (
-        <>
+        <View style={style.container}>
             <Button title="Location" onPress={setCurrentLocation} />
             <LocationDetails location={location} />
-        </>
+        </View>
     );
 }
