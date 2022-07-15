@@ -1,8 +1,8 @@
-import { ServerResponse, User } from './types';
+import { ServerResponse, Token, User } from './types';
 
-export async function putUser(user: User): Promise<User | any> {
+export async function putUser(user: User): Promise<(User & Token) | any> {
     try {
-        const putRequest = await fetch('http://192.168.1.10:8000/users/create', { 
+        const putRequest = await fetch('http://192.168.1.10:8000/auth/signup', { 
             method: 'post',
             body: JSON.stringify(user),
             headers: {
@@ -10,7 +10,7 @@ export async function putUser(user: User): Promise<User | any> {
             }
         });
 
-        const putRequestResponse: ServerResponse<User> = await putRequest.json();
+        const putRequestResponse: ServerResponse<(User & Token)> = await putRequest.json();
 
         if (putRequestResponse.success) {
             return putRequestResponse.data!;

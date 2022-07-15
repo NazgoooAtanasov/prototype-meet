@@ -1,12 +1,13 @@
 import { TextInput, StyleSheet } from 'react-native';
 
-export default function InputField(props: { label: string, value: string, setValue: any }) {
+export default function InputField(props: { label: string, value: string, setValue: any, type?: string }) {
     return ( 
         <TextInput
             style={inputStyle.input}
             placeholder={props.label}
             value={props.value}
             onChangeText={props.setValue}
+            secureTextEntry={props.type === 'password'}
         />
     );
 }

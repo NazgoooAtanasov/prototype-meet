@@ -52,17 +52,28 @@ export async function signin(req: Request, res: Response) {
 }
 
 export async function signup(req: Request, res: Response) {
-    const response: ServerResponse<User> = { success: true, error: null };
+    const response: ServerResponse<(User & Token)> = { success: true, error: null };
     const signupCredentials: User = req.body;
 
     try {
         const user: User = await putUser(signupCredentials);
         // just removing the password before sending the user to the client
         user.password = '*************';
-        response.data = user;
-    } catch (err) {
+
+        const token: Token = {
+            jwt: generateJWT({
+                email: user.email,
+                id: user.id
+            })
+        };
+
+        response.data = {
+            ...user,
+            ...token
+        };
+    } catch (err: any) {
         response.success = false;
-        response.error = err;
+        response.error = err.message;
     }
 
     res.json(response);
