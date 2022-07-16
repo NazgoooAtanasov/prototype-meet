@@ -8,7 +8,7 @@ import {
     UserAndLocations,
     TokenCredentials,
     Token,
-    SigninCredentials
+    SigninCredentials,
 } from '../types/types';
 import { User } from '@prisma/client';
 
@@ -26,7 +26,9 @@ export async function signin(req: Request, res: Response) {
     const response: ServerResponse<Token> = { success: true, error: null };
     const signinCredentials: SigninCredentials = req.body;
 
-    const user: UserAndLocations = await fetchUserByEmail(signinCredentials.email);
+    const user: UserAndLocations = await fetchUserByEmail(
+        signinCredentials.email
+    );
 
     if (!user) {
         response.success = false;
@@ -36,7 +38,10 @@ export async function signin(req: Request, res: Response) {
     }
 
     // check password hash
-    const arePasswordsMatching = await bcrypt.compare(signinCredentials.password, user.password);
+    const arePasswordsMatching = await bcrypt.compare(
+        signinCredentials.password,
+        user.password
+    );
 
     if (!arePasswordsMatching) {
         response.success = false;
@@ -45,14 +50,17 @@ export async function signin(req: Request, res: Response) {
     }
 
     response.data = {
-        jwt: generateJWT({ email: user.email, id: user.id })
+        jwt: generateJWT({ email: user.email, id: user.id }),
     };
-    
+
     res.json(response);
 }
 
 export async function signup(req: Request, res: Response) {
-    const response: ServerResponse<(User & Token)> = { success: true, error: null };
+    const response: ServerResponse<User & Token> = {
+        success: true,
+        error: null,
+    };
     const signupCredentials: User = req.body;
 
     try {
@@ -63,13 +71,13 @@ export async function signup(req: Request, res: Response) {
         const token: Token = {
             jwt: generateJWT({
                 email: user.email,
-                id: user.id
-            })
+                id: user.id,
+            }),
         };
 
         response.data = {
             ...user,
-            ...token
+            ...token,
         };
     } catch (err: any) {
         response.success = false;
