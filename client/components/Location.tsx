@@ -1,4 +1,4 @@
-import { fetchLocation } from '../api/location';
+import { assignLocationToUser, fetchLocation } from '../api/location';
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { LocationObject } from 'expo-location';
@@ -22,7 +22,17 @@ export default function Location() {
     const [location, setLocation] = useState<LocationObject | null>(null);
 
     async function setCurrentLocation() {
-        setLocation(await fetchLocation());
+        console.log('asd');
+        const apiLocation: LocationObject | null = await fetchLocation();
+
+        if (apiLocation) {
+            const assignLocation = await assignLocationToUser({
+                longitude: apiLocation.coords.longitude,
+                latitude: apiLocation.coords.latitude,
+            });
+        }
+
+        setLocation(apiLocation);
     }
 
     return (

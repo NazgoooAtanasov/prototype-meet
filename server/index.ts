@@ -1,6 +1,7 @@
 import express from 'express';
 import { signin, signup } from './routes/auth';
-import { getUser, linkLocation } from './routes/users';
+import { getUser, assignLocation } from './routes/users';
+import { auth } from './middlewares/auth';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -11,7 +12,7 @@ expressApp.use(express.json());
 
 expressApp.get('/users/:id', getUser);
 
-expressApp.post('/users/:id/location', linkLocation);
+expressApp.post('/users/location', auth, assignLocation);
 
 expressApp.post('/auth/signin', signin);
 expressApp.post('/auth/signup', signup);

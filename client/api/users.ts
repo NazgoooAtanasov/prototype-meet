@@ -2,7 +2,7 @@ import { ServerResponse, Token, User } from './types';
 
 export async function signup(user: User): Promise<(User & Token) | any> {
     try {
-        const putRequest = await fetch('http://192.168.1.10:8000/auth/signup', {
+        const putRequest = await fetch('http://192.168.1.8:8000/auth/signup', {
             method: 'post',
             body: JSON.stringify(user),
             headers: {
@@ -29,7 +29,7 @@ export async function signin(credentials: {
 }): Promise<Token> {
     try {
         const signinRequest = await fetch(
-            'http://192.168.1.10:8000/auth/signin',
+            'http://192.168.1.8:8000/auth/signin',
             {
                 method: 'post',
                 body: JSON.stringify(credentials),

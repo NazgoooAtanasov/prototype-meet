@@ -12,8 +12,8 @@ export default function Login() {
     const [password, setPassword] = useState<string>('');
 
     async function signinHandle() {
-        console.log(email, password);
         const token: Token = await signin({ email, password });
+
         await saveToStore<string>('jwt', token.jwt);
     }
 

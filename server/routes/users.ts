@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { fetchUser, putLocation } from '../prisma/user';
 import { ServerResponse, UserAndLocations } from '../types/types';
 
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
 export async function getUser(req: Request, res: Response) {
     const id: number = parseInt(req.params.id);
     const response: ServerResponse<UserAndLocations> = {
@@ -21,13 +23,28 @@ export async function getUser(req: Request, res: Response) {
     res.json(response);
 }
 
-export async function linkLocation(req: Request, res: Response) {
+function checkJWT(req: Request, res: Response) {
+    const authHeader: string | undefined = req.header('Authorization');
+    console.log(authHeader);
+
+    if (!authHeader) return null;
+
+    const [_bearer, token]: string[] = authHeader.split(' ')!;
+    console.log(token);
+
+    const decodedToken: JwtPayload | string = jwt.verify(
+        token,
+        process.env.JWT_SECRET!
+    );
+}
+
+export async function assignLocation(req: Request, res: Response) {
     const response: ServerResponse<UserAndLocations> = {
         success: true,
         error: null,
     };
 
-    const userId: number = parseInt(req.params.id);
+    const userId: number = parseInt(res.locals.authenticatedUserId);
     const location: Location = req.body;
 
     try {
