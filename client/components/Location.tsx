@@ -6,7 +6,13 @@ import { style } from '../styles/styles';
 
 function LocationDetails(props: { location: LocationObject | null }) {
     if (props.location) {
-        return <Text> latitude: {props.location.coords.latitude}, longitude: {props.location.coords.longitude} </Text>;
+        return (
+            <Text>
+                {' '}
+                latitude: {props.location.coords.latitude}, longitude:{' '}
+                {props.location.coords.longitude}{' '}
+            </Text>
+        );
     }
 
     return <></>;

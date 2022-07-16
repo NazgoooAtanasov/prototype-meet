@@ -20,8 +20,13 @@ export default function Login() {
     return (
         <View style={style.container}>
             <InputField label="email" value={email} setValue={setEmail} />
-            <InputField label="password" value={password} setValue={setPassword} type="password" />
+            <InputField
+                label="password"
+                value={password}
+                setValue={setPassword}
+                type="password"
+            />
             <SubmitButton title="Sign in" submitCallback={signinHandle} />
         </View>
-    )
+    );
 }

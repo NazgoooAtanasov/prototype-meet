@@ -17,24 +17,37 @@ export default function Register() {
 
     const submit = async (): Promise<void> => {
         if (firstname.length > 0 && lastname.length > 0 && email.length > 0) {
-            const user: (User & Token) = await signup({
+            const user: User & Token = await signup({
                 firstname,
                 lastname,
                 email,
-                password
+                password,
             });
 
             await saveToStore<string>('jwt', user.jwt);
         }
-    }
+    };
 
     return (
         <View style={style.container}>
-            <InputField label="firstname" value={firstname} setValue={setFirstname} />
-            <InputField label="lastname" value={lastname} setValue={setLastname} />
+            <InputField
+                label="firstname"
+                value={firstname}
+                setValue={setFirstname}
+            />
+            <InputField
+                label="lastname"
+                value={lastname}
+                setValue={setLastname}
+            />
             <InputField label="email" value={email} setValue={setEmail} />
-            <InputField label="password" value={password} setValue={setPassword} type="password" />
+            <InputField
+                label="password"
+                value={password}
+                setValue={setPassword}
+                type="password"
+            />
             <SubmitButton title="Sign up" submitCallback={submit} />
         </View>
-    )
+    );
 }

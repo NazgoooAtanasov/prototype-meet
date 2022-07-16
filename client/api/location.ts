@@ -1,10 +1,15 @@
-import { getForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject, requestForegroundPermissionsAsync } from 'expo-location';
+import {
+    getForegroundPermissionsAsync,
+    getCurrentPositionAsync,
+    LocationObject,
+    requestForegroundPermissionsAsync,
+} from 'expo-location';
 
 export async function fetchLocation(): Promise<LocationObject | null> {
     const permission = await getForegroundPermissionsAsync();
 
     if (!permission.granted) {
-        await requestForegroundPermissionsAsync()
+        await requestForegroundPermissionsAsync();
         return null;
     }
 

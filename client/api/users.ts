@@ -2,15 +2,16 @@ import { ServerResponse, Token, User } from './types';
 
 export async function signup(user: User): Promise<(User & Token) | any> {
     try {
-        const putRequest = await fetch('http://192.168.1.10:8000/auth/signup', { 
+        const putRequest = await fetch('http://192.168.1.10:8000/auth/signup', {
             method: 'post',
             body: JSON.stringify(user),
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         });
 
-        const putRequestResponse: ServerResponse<(User & Token)> = await putRequest.json();
+        const putRequestResponse: ServerResponse<User & Token> =
+            await putRequest.json();
 
         if (putRequestResponse.success) {
             return putRequestResponse.data!;
@@ -22,17 +23,24 @@ export async function signup(user: User): Promise<(User & Token) | any> {
     }
 }
 
-export async function signin(credentials: { email: string, password: string }): Promise<Token> {
+export async function signin(credentials: {
+    email: string;
+    password: string;
+}): Promise<Token> {
     try {
-        const signinRequest = await fetch('http://192.168.1.10:8000/auth/signin', {
-            method: 'post',
-            body: JSON.stringify(credentials),
-            headers: {
-                'Content-Type': 'application/json'
+        const signinRequest = await fetch(
+            'http://192.168.1.10:8000/auth/signin',
+            {
+                method: 'post',
+                body: JSON.stringify(credentials),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }
-        });
+        );
 
-        const signinRequestResponse: ServerResponse<Token> = await signinRequest.json();
+        const signinRequestResponse: ServerResponse<Token> =
+            await signinRequest.json();
         if (signinRequestResponse.success) {
             return signinRequestResponse.data!;
         }

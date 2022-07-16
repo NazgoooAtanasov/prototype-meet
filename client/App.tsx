@@ -11,20 +11,11 @@ export default function App() {
     return (
         <NavigationContainer>
             <Tab.Navigator>
-                <Tab.Screen
-                    name="Register"
-                    component={Register}
-                />
+                <Tab.Screen name="Register" component={Register} />
 
-                <Tab.Screen
-                    name="Login"
-                    component={Login}
-                />
+                <Tab.Screen name="Login" component={Login} />
 
-                <Tab.Screen
-                    name="Location"
-                    component={Location}
-                />
+                <Tab.Screen name="Location" component={Location} />
             </Tab.Navigator>
         </NavigationContainer>
     );

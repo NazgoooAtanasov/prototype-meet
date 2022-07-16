@@ -1,7 +1,12 @@
 import { TextInput, StyleSheet } from 'react-native';
 
-export default function InputField(props: { label: string, value: string, setValue: any, type?: string }) {
-    return ( 
+export default function InputField(props: {
+    label: string;
+    value: string;
+    setValue: any;
+    type?: string;
+}) {
+    return (
         <TextInput
             style={inputStyle.input}
             placeholder={props.label}
@@ -18,6 +23,6 @@ const inputStyle = StyleSheet.create({
         borderWidth: 1,
         width: 100,
         marginTop: 10,
-        paddingLeft: 5
-    }
+        paddingLeft: 5,
+    },
 });
