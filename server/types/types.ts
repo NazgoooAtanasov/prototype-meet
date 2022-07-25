@@ -12,11 +12,6 @@ export interface Token {
     jwt: string;
 }
 
-export interface SigninCredentials {
-    email: string;
-    password: string;
-}
-
 export interface TokenCredentials {
     id: number;
     email: string;

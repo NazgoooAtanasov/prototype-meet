@@ -1,6 +1,6 @@
-import { Location, User } from '@prisma/client';
+import { Location } from '@prisma/client';
 import { Request, Response } from 'express';
-import { fetchUser, putLocation } from '../prisma/user';
+import { putLocation } from '../prisma/user';
 import { ServerResponse, UserAndLocations } from '../types/types';
 
 import jwt, { JwtPayload } from 'jsonwebtoken';

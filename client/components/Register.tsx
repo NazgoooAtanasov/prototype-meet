@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { saveToStore } from '../api/storage';
-import { Token, User } from '../api/types';
-import { signup } from '../api/users';
+import { trpc } from '../client/util/trpc';
 import { style } from '../styles/styles';
 
 import InputField from './form/InputField';
 import SubmitButton from './form/SubmitButton';
 
 export default function Register() {
+    const createUserMutation = trpc.useMutation(['auth.signup']);
+
     const [firstname, setFirstname] = useState<string>('');
     const [lastname, setLastname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
@@ -17,7 +18,7 @@ export default function Register() {
 
     const submit = async (): Promise<void> => {
         if (firstname.length > 0 && lastname.length > 0 && email.length > 0) {
-            const user: User & Token = await signup({
+            const user = await createUserMutation.mutateAsync({
                 firstname,
                 lastname,
                 email,
