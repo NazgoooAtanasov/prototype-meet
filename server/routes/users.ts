@@ -5,24 +5,6 @@ import { ServerResponse, UserAndLocations } from '../types/types';
 
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-export async function getUser(req: Request, res: Response) {
-    const id: number = parseInt(req.params.id);
-    const response: ServerResponse<UserAndLocations> = {
-        success: true,
-        error: null,
-    };
-
-    try {
-        const user: UserAndLocations = await fetchUser(id);
-        response.data = user;
-    } catch (err) {
-        response.success = false;
-        response.error = err;
-    }
-
-    res.json(response);
-}
-
 function checkJWT(req: Request, res: Response) {
     const authHeader: string | undefined = req.header('Authorization');
     console.log(authHeader);
