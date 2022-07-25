@@ -1,7 +1,4 @@
 import express from 'express';
-import { signin, signup } from './routes/auth';
-import { assignLocation } from './routes/users';
-import { auth } from './middlewares/auth';
 import dotenv from 'dotenv';
 import * as trpc from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
@@ -12,6 +9,7 @@ import { UserAndLocations, TokenCredentials, Token } from './types/types';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 
 dotenv.config();
 
@@ -27,10 +25,23 @@ const createContext = ({
     req,
     res,
 }: trpcExpress.CreateExpressContextOptions) => {
+    function getUser() {
+        const authHeader: string | undefined = req.header('Authorization');
+
+        if (!authHeader) return null;
+
+        const [_bearer, token]: string[] = authHeader.split(' ')!;
+
+        const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET!);
+
+        return decodedToken.data.id;
+    }
+
     return {
         req,
         res,
         prisma,
+        userId: getUser(),
     };
 };
 type Context = trpc.inferAsyncReturnType<typeof createContext>;
@@ -45,15 +56,45 @@ function generateJWT(tokenCredentials: TokenCredentials) {
     return token;
 }
 
-const usersRouter = trpc.router<Context>().query('get', {
-    input: z.number(),
-    async resolve({ ctx: { prisma }, input }): Promise<UserAndLocations> {
-        return await prisma.user.findFirst({
-            where: { id: input },
-            include: { locations: true },
-        });
-    },
-});
+const usersRouter = trpc
+    .router<Context>()
+    .middleware(({ ctx, next }) => {
+        if (!ctx.userId) throw new TRPCError({ code: 'UNAUTHORIZED' });
+
+        return next();
+    })
+    .query('get', {
+        input: z.number(),
+        async resolve({ ctx: { prisma, userId } }): Promise<UserAndLocations> {
+            return await prisma.user.findFirst({
+                where: { id: userId },
+                include: { locations: true },
+            });
+        },
+    })
+    .mutation('location', {
+        input: z.object({
+            longitude: z.number(),
+            latitude: z.number(),
+        }),
+        async resolve({
+            ctx: { prisma, userId },
+            input: { longitude, latitude },
+        }): Promise<UserAndLocations> {
+            const location: UserAndLocations = await prisma.user.update({
+                where: {
+                    id: userId,
+                },
+                data: {
+                    locations: { create: { longitude, latitude } },
+                },
+
+                include: { locations: true },
+            });
+
+            return location;
+        },
+    });
 
 const authRouter = trpc
     .router<Context>()
@@ -130,8 +171,6 @@ expressApp.use(
 );
 
 expressApp.use(express.json());
-
-expressApp.post('/users/location', auth, assignLocation);
 
 expressApp.listen('8000', () => {
     console.debug('[server] running at port 8000');

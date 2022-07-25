@@ -13,12 +13,12 @@ const Tab = createMaterialBottomTabNavigator();
 
 export default function App() {
     const [queryClient] = useState(() => new QueryClient());
-    const [trpcClient] = useState(() => 
+    const [trpcClient] = useState(() =>
         trpc.createClient({
-            url: 'http://localhost:8000/trpc'
+            url: 'http://192.168.1.10:8000/trpc',
         })
     );
-    
+
     return (
         <trpc.Provider client={trpcClient} queryClient={queryClient}>
             <QueryClientProvider client={queryClient}>
