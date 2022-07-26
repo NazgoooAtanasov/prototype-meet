@@ -1,20 +1,25 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { saveToStore } from '../api/storage';
-import { Token } from '../api/types';
 import { style } from '../styles/styles';
-import { signin } from '../api/users';
 import InputField from './form/InputField';
 import SubmitButton from './form/SubmitButton';
+import { trpc } from '../client/util/trpc';
 
 export default function Login() {
+    const signinMutation = trpc.useMutation(['auth.signin']);
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     async function signinHandle() {
-        const token: Token = await signin({ email, password });
+        const token = await signinMutation.mutateAsync({ email, password });
 
-        await saveToStore<string>('jwt', token.jwt);
+        if (token.jwt) {
+            await saveToStore<string>('jwt', token.jwt);
+        } else {
+            // @TODO: error handling here
+        }
     }
 
     return (

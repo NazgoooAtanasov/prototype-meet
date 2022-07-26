@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { LocationObject } from 'expo-location';
 import { style } from '../styles/styles';
+import { trpc } from '../client/util/trpc';
 
 function LocationDetails(props: { location: LocationObject | null }) {
     if (props.location) {
@@ -19,17 +20,20 @@ function LocationDetails(props: { location: LocationObject | null }) {
 }
 
 export default function Location() {
+    const locationMutation = trpc.useMutation(['users.location']);
+
     const [location, setLocation] = useState<LocationObject | null>(null);
 
     async function setCurrentLocation() {
-        console.log('asd');
         const apiLocation: LocationObject | null = await fetchLocation();
 
         if (apiLocation) {
-            const assignLocation = await assignLocationToUser({
+            const setLocation = await locationMutation.mutateAsync({
                 longitude: apiLocation.coords.longitude,
                 latitude: apiLocation.coords.latitude,
             });
+
+            console.log(setLocation);
         }
 
         setLocation(apiLocation);

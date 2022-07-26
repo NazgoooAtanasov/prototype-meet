@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { PrismaClient, User } from '@prisma/client';
 import { UserAndLocations } from '../types/types';
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export async function putUser(user: User): Promise<User> {
     // what are rounds???
@@ -15,15 +15,6 @@ export async function putUser(user: User): Promise<User> {
             lastname: user.lastname,
             email: user.email,
             password: hashedpassword,
-        },
-    });
-}
-
-export async function fetchUser(id: number): Promise<UserAndLocations> {
-    return await prisma.user.findFirst({
-        where: { id },
-        include: {
-            locations: true,
         },
     });
 }
