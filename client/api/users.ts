@@ -1,23 +1,24 @@
+import { request } from '../utils/request';
 import { ServerResponse, Token, User } from './types';
 
 export async function signup(user: User): Promise<(User & Token) | any> {
     try {
-        const putRequest = await fetch('http://192.168.1.8:8000/auth/signup', {
-            method: 'post',
-            body: JSON.stringify(user),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const signup: ServerResponse<User & Token> = await request(
+            '/auth/signup',
+            {
+                method: 'post',
+                body: JSON.stringify(user),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
 
-        const putRequestResponse: ServerResponse<User & Token> =
-            await putRequest.json();
-
-        if (putRequestResponse.success) {
-            return putRequestResponse.data!;
+        if (signup.success) {
+            return signup.data!;
         }
 
-        return putRequestResponse.error;
+        return signup.error;
     } catch (error) {
         return error;
     }
@@ -28,24 +29,19 @@ export async function signin(credentials: {
     password: string;
 }): Promise<Token> {
     try {
-        const signinRequest = await fetch(
-            'http://192.168.1.8:8000/auth/signin',
-            {
-                method: 'post',
-                body: JSON.stringify(credentials),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const signin: ServerResponse<Token> = await request('/auth/signin', {
+            method: 'post',
+            body: JSON.stringify(credentials),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-        const signinRequestResponse: ServerResponse<Token> =
-            await signinRequest.json();
-        if (signinRequestResponse.success) {
-            return signinRequestResponse.data!;
+        if (signin.success) {
+            return signin.data!;
         }
 
-        return signinRequestResponse.error;
+        return signin.error;
     } catch (error) {
         return error;
     }

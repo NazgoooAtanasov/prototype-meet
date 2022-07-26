@@ -4,7 +4,9 @@ import {
     LocationObject,
     requestForegroundPermissionsAsync,
 } from 'expo-location';
+import { request } from '../utils/request';
 import { getFromStore } from './storage';
+import { ServerResponse } from './types';
 
 export async function fetchLocation(): Promise<LocationObject | null> {
     const permission = await getForegroundPermissionsAsync();
@@ -23,12 +25,12 @@ interface Location {
     latitude: number;
 }
 
-export async function assignLocationToUser(location: Location): Promise<null> {
+export async function assignLocationToUser(location: Location): Promise<void> {
     const jwt: string | null = await getFromStore<string>('jwt');
 
     if (jwt) {
-        const assignLocationToUserRequest = await fetch(
-            'http://192.168.1.8:8000/users/location',
+        const assignLocation: ServerResponse<Location> = await request(
+            '/users/location',
             {
                 method: 'post',
                 body: JSON.stringify(location),
@@ -38,10 +40,5 @@ export async function assignLocationToUser(location: Location): Promise<null> {
                 },
             }
         );
-
-        const assignLocationToUserRequestResponse =
-            await assignLocationToUserRequest.json();
     }
-
-    return null;
 }
